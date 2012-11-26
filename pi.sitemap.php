@@ -74,11 +74,12 @@ class Plugin_sitemap extends Plugin
    */
   private function parse_folder_item($item){
     $data = Statamic::get_content_meta("page", $item['url']);
-    $permalink = Statamic_helper::reduce_double_slashes($this->site_url . '/' .$item['url']);  
+    $permalink = Statamic_helper::reduce_double_slashes($this->site_url . '/' .$item['url']);
+    $moddate = array_key_exists('last_modified',$data) ? date("Y-m-d", $data['last_modified']) : false;
     $this->data[] = array(
       'loc' => $permalink,
-      'lastmod' => date("Y-m-d", $data['last_modified']),
-      'changefreq' => $this->set_frequency($data['last_modified']),
+      'lastmod' =>  $moddate,
+      'changefreq' => $this->set_frequency($moddate),
       'priority' => $this->set_priority($data),
 
     );
