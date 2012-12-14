@@ -73,9 +73,9 @@ class Plugin_sitemap extends Plugin
    * @param $item
    */
   private function parse_folder_item($item){
-    $data = Statamic::get_content_meta("page", $item['url']);
+    $data = Statamic::get_content_meta("page", $item['url']);    
     $permalink = Statamic_helper::reduce_double_slashes($this->site_url . '/' .$item['url']);
-    $moddate = array_key_exists('last_modified',$data) ? date("Y-m-d", $data['last_modified']) : false;
+    $moddate = array_key_exists('last_modified',$data) ? date("Y-m-d", $data['last_modified']) : date("Y-m-d", strtotime("-1 day"));
     $this->data[] = array(
       'loc' => $permalink,
       'lastmod' =>  $moddate,
@@ -91,7 +91,7 @@ class Plugin_sitemap extends Plugin
    */
   private function parse_file_item($item, $folder=null){
     $data = Statamic::get_content_meta($item['slug'], $folder);
-    $moddate  = (array_key_exists('last_modified', $data)) ? $data['last_modified'] : false;
+    $moddate  = (array_key_exists('last_modified', $data)) ? $data['last_modified'] : date("Y-m-d", strtotime("-1 day"));
     $permalink = Statamic_helper::reduce_double_slashes($this->site_url . '/' .$item['url']);
     $this->data[] = array(
       'loc' => $permalink,
