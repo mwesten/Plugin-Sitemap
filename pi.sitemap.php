@@ -4,7 +4,7 @@ class Plugin_sitemap extends Plugin
 
   var $meta = array(
     'name'       => 'Sitemap',
-    'version'    => '0.1',
+    'version'    => '0.1.1',
     'author'     => 'Max Westen',
     'author_url' => 'http://dlmax.org'
   );
@@ -44,8 +44,13 @@ class Plugin_sitemap extends Plugin
    */
   private function parse_tree_data($url) {
     $url = Statamic_Helper::resolve_path($url);
-    $tree = Statamic::get_content_tree($url, 1, 1000, true, false);
+    $tree = Statamic::get_content_tree($url, 1, $this->max_entry_limit, true, false);
 
+    // Add Homepage
+    $root_item = array('slug' => '/page','url'=>'');
+    $this->parse_file_item($root_item);
+    
+    // Now add all other items
     if (count($tree) > 0) {
       foreach ($tree as $item) {
         if ($item['type'] == 'file') {
