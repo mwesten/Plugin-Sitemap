@@ -4,7 +4,7 @@ class Plugin_sitemap extends Plugin
 
   var $meta = array(
     'name'       => 'Sitemap',
-    'version'    => '0.1',
+    'version'    => '0.2',
     'author'     => 'Max Westen',
     'author_url' => 'http://dlmax.org'
   );
@@ -28,10 +28,9 @@ class Plugin_sitemap extends Plugin
     $output = false;
     $url = '/';
 
-    $this->parse_tree_data($url);
-    
+    $this->parseTreeData($url);    
     if (count($this->content) > 0) {
-      $output = $this->parse_loop($this->content, $this->data);
+      $output = Parse::tagLoop($this->content, $this->data);
     }
 
     return $output;
@@ -42,24 +41,29 @@ class Plugin_sitemap extends Plugin
    * Runs trough the navigation tree for as long as needed and adds items to $this->data.
    * @param $url
    */
-  private function parse_tree_data($url) {
-    $url = Statamic_Helper::resolve_path($url);
-    $tree = Statamic::get_content_tree($url, 1, 1000, true, false);
-
+  private function parseTreeData($url) {
+    $url = Path::resolve($url);
+    $tree = Statamic::get_content_tree($url, 1, $this->max_entry_limit, true, false, true, false, false);
+    
+    // Add Homepage
+    $root_item = array('slug' => '/page','url'=>'');
+    $this->parseFileItem($root_item);
+    
+    // Now add all other items
     if (count($tree) > 0) {
       foreach ($tree as $item) {
         if ($item['type'] == 'file') {
-          $this->parse_file_item($item, $url);
+          $this->parseFileItem($item, $url);
         }
         if ($item['type'] == 'folder') {
-          $this->parse_folder_item($item);
+          $this->parsFolderItem($item);
           if ($item['has_children']) {
-            $this->parse_tree_data($item['url']);
+            $this->parseTreeData($item['url']);
           }
           if ($item['has_entries']) {
             $list = Statamic::get_content_list($item['url'], $this->max_entry_limit, 0, false, true, 'date', 'desc');
             foreach ($list as $entry) {
-              $this->parse_entry_item($entry);
+              $this->parseEntryItem($entry);
             }
           }
         }
@@ -72,15 +76,15 @@ class Plugin_sitemap extends Plugin
    * This adds an item to the sitemap containing a folder (checks page.md)
    * @param $item
    */
-  private function parse_folder_item($item){
+  private function parsFolderItem($item){
     $data = Statamic::get_content_meta("page", $item['url']);    
-    $permalink = Statamic_helper::reduce_double_slashes($this->site_url . '/' .$item['url']);
+    $permalink = Path::tidy($this->site_url . '/' .$item['url']);
     $moddate = array_key_exists('last_modified',$data) ? date("Y-m-d", $data['last_modified']) : date("Y-m-d", strtotime("-1 day"));
     $this->data[] = array(
       'loc' => $permalink,
       'lastmod' =>  $moddate,
-      'changefreq' => $this->set_frequency($moddate),
-      'priority' => $this->set_priority($data),
+      'changefreq' => $this->setFrequency($moddate),
+      'priority' => $this->setPriority($data),
 
     );
   }
@@ -88,16 +92,17 @@ class Plugin_sitemap extends Plugin
   /**
    * This adds an item to the sitemap containing a file
    * @param $item
+   * @param $folder
    */
-  private function parse_file_item($item, $folder=null){
+  private function parseFileItem($item, $folder=null){
     $data = Statamic::get_content_meta($item['slug'], $folder);
     $moddate  = (array_key_exists('last_modified', $data)) ? $data['last_modified'] : date("Y-m-d", strtotime("-1 day"));
-    $permalink = Statamic_helper::reduce_double_slashes($this->site_url . '/' .$item['url']);
+    $permalink = Path::tidy($this->site_url . '/' .$item['url']);
     $this->data[] = array(
       'loc' => $permalink,
       'lastmod' => date("Y-m-d", $moddate),
-      'changefreq' => $this->set_frequency($moddate),
-      'priority' => $this->set_priority($data),
+      'changefreq' => $this->setFrequency($moddate),
+      'priority' => $this->setPriority($data),
 
     );
   }
@@ -106,12 +111,12 @@ class Plugin_sitemap extends Plugin
    * This adds an item to the sitemap containing an entry 
    * @param $item
    */
-  private function parse_entry_item($item){
+  private function parseEntryItem($item){
     $this->data[] = array(
       'loc' => $item['permalink'],
       'lastmod' => date("Y-m-d", $item['last_modified']),
-      'changefreq' => $this->set_frequency($item['last_modified']),
-      'priority' => $this->set_priority($item),
+      'changefreq' => $this->setFrequency($item['last_modified']),
+      'priority' => $this->setPriority($item),
     );
   }
 
@@ -120,7 +125,7 @@ class Plugin_sitemap extends Plugin
    * @param $timestamp 
    * @return string
    */
-  private function set_frequency($timestamp) {
+  private function setFrequency($timestamp) {
     if ($timestamp === false) {
       return 'never';
     }
@@ -142,7 +147,7 @@ class Plugin_sitemap extends Plugin
 
   }
 
-  private function set_priority($item) {
+  private function setPriority($item) {
     if (array_key_exists('priority', $item)) {
       return $item['priority'];
     } else {

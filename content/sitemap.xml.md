@@ -2,6 +2,6 @@
 _layout: sitemap
 _template: sitemap
 _type: rss
-status: live
+status: hidden
 ---
 THIS IS THE SITEMAP PAGE

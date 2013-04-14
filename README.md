@@ -1,7 +1,8 @@
 Plugin-Sitemap
 =============
 
-Dynamic Sitemap plugin for Statamic
+Dynamic Sitemap plugin for Statamic 1.5
+(for Statamic 1.4 use the `statamic-1_4` branch)
 
 # Installation
 ## Copy or clone the files to their destination
