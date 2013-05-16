@@ -20,11 +20,11 @@ Copy the files from the `_add-ons/sitemap/layouts` folder to your `_themes/theme
 Copy the files from the `_add-ons/sitemap/templates` folder to your `_themes/themename/templates` folder.
 
 ## Copy the sitemap-page
-Copy the file `sitemap.md` from the `_add-ons/sitemap/content` folder to your `_content` folder.
+Copy the file `sitemap.xml.md` from the `_add-ons/sitemap/content` folder to your `_content` folder.
 
-The sitemap will then be available by calling `http://example.com/sitemap`.
+The sitemap will then be available by calling `http://example.com/sitemap.xml`.
 
-You can also rename the file. If you rename the file to  `sitemap.xml.md` ti will be available as `http://example.com/sitemap.xml`.
+You can also rename the file. If you rename the file to  `sitemap.md` it will be available as `http://example.com/sitemap`.
 
 
 # Usage
