@@ -12,9 +12,9 @@ class Plugin_sitemap extends Plugin
   function __construct()
   {
     parent::__construct();
-    $this->site_root = Statamic::get_site_root();
-    $this->site_url = Statamic::get_site_url();
-    $this->content_root = Statamic::get_content_root();
+    $this->site_root = Config::getSiteRoot();
+    $this->site_url = Config::getSiteURL();
+    $this->content_root = Config::getContentRoot();
     $this->data = array();
 
     /**
