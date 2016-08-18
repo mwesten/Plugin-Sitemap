@@ -4,7 +4,7 @@ class Plugin_sitemap extends Plugin
 
   var $meta = array(
     'name'       => 'Sitemap',
-    'version'    => '0.2',
+    'version'    => '0.3',
     'author'     => 'Max Westen',
     'author_url' => 'http://dlmax.org'
   );
@@ -16,6 +16,10 @@ class Plugin_sitemap extends Plugin
     $this->site_url = Config::getSiteURL();
     $this->content_root = Config::getContentRoot();
     $this->data = array();
+
+    // Disable debugging for the sitemap to prevent weird rendering
+    global $is_debuggable_route;
+    $is_debuggable_route = false;
 
     /**
      * Parses a maximum of max_entry_limit entries in a folder

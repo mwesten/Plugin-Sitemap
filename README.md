@@ -1,5 +1,5 @@
-Plugin-Sitemap
-=============
+Plugin-Sitemap(v0.3) for Statamic v1 
+=====================================
 
 Dynamic Sitemap plugin for Statamic 1.5
 (for Statamic 1.4 use the `statamic-1_4` branch)
@@ -22,9 +22,7 @@ Copy the files from the `_add-ons/sitemap/templates` folder to your `_themes/the
 ## Copy the sitemap-page
 Copy the file `sitemap.md` from the `_add-ons/sitemap/content` folder to your `_content` folder.
 
-The sitemap will then be available by calling `http://example.com/sitemap`.
-
-You can also rename the file. If you rename the file to  `sitemap.xml.md` ti will be available as `http://example.com/sitemap.xml`.
+The sitemap will then be available by calling `http://example.com/sitemap` or `http://example.com/sitemap.xml`.
 
 
 # Usage
